@@ -1,63 +1,63 @@
-from PIL import Image
+import cv2
 import numpy as np
 
-def load_and_resize_image(image_path, target_size=(256, 256)):
-    """Load and resize an image to the target size."""
-    img = Image.open(image_path).convert('RGB')
-    return img.resize(target_size)
+def calculate_color_difference(image1_path, image2_path):
+    # Read images
+    img1 = cv2.imread(image1_path)
+    img2 = cv2.imread(image2_path)
 
-def calculate_color_difference(img1, img2):
-    """Calculate the Euclidean color difference between two images."""
-    arr1 = np.array(img1)
-    arr2 = np.array(img2)
-    diff = np.sqrt(np.sum((arr1 - arr2) ** 2, axis=2))
-    return diff
+    if img1 is None or img2 is None:
+        raise ValueError("One or both images not found")
 
-def map_difference_to_score(diff, score_map):
-    """Map color differences to scores using a predefined score map."""
-    mapped_scores = np.zeros_like(diff, dtype=int)
-    for score, color_range in score_map.items():
-        mapped_scores[(diff >= color_range[0]) & (diff < color_range[1])] = score
-    return mapped_scores
+    # Ensure images are of the same size
+    if img1.shape != img2.shape:
+        raise ValueError("Images must be of the same size")
 
-def create_colormap_image(mapped_scores, color_map):
-    """Create a color map image based on the mapped scores."""
-    colormap_img = Image.new('RGB', mapped_scores.shape[::-1])
-    pixels = colormap_img.load()
-    for i in range(mapped_scores.shape[0]):
-        for j in range(mapped_scores.shape[1]):
-            score = mapped_scores[i, j]
-            pixels[j, i] = color_map[score]
-    return colormap_img
+    # Calculate absolute difference
+    diff = cv2.absdiff(img1, img2)
 
-def save_colormap_image(colormap_img, score):
-    """Save the color map image with a filename based on the score."""
-    filename = f"colormap_score_{score}.png"
-    colormap_img.save(filename)
+    # Convert difference to grayscale for simplicity
+    gray_diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
 
-def main(image1_path, image2_path):
-    # Load and resize images
-    img1 = load_and_resize_image(image1_path)
-    img2 = load_and_resize_image(image2_path)
+    # Save grayscale difference for debugging
+    cv2.imwrite('grayscale_difference.png', gray_diff)
 
-    # Calculate color difference
-    diff = calculate_color_difference(img1, img2)
+    # Define color mapping thresholds and colors
+    thresholds = [0, 50, 100, 150]
+    colors = [
+        (0, 0, 255),       # Red
+        (0, 165, 255),     # Orange
+        (0, 255, 0),       # Green
+        (173, 216, 230)    # Light Blue
+    ]
 
-    # Define score map and color map
-    score_map = {0: (0, 50), 50: (50, 100), 100: (100, 150), 150: (150, 256)}
-    color_map = {0: (255, 0, 0), 50: (255, 165, 0), 100: (0, 255, 0), 150: (173, 216, 230)}
+    # Create an empty image to hold the color map
+    color_map = np.zeros_like(img1)
 
-    # Map differences to scores
-    mapped_scores = map_difference_to_score(diff, score_map)
+    # Map grayscale differences to colors
+    for i in range(len(thresholds) - 1):
+        mask = (gray_diff >= thresholds[i]) & (gray_diff < thresholds[i + 1])
+        color_map[mask] = colors[i]
 
-    # Create color map image
-    colormap_img = create_colormap_image(mapped_scores, color_map)
+    # For values equal to or greater than the last threshold
+    mask = (gray_diff >= thresholds[-1])
+    color_map[mask] = colors[-1]
 
-    # Calculate overall score (e.g., mean of mapped scores)
-    overall_score = int(np.mean(mapped_scores))
+    # Save color map for debugging
+    cv2.imwrite('color_map_debug.png', color_map)
 
-    # Save color map image
-    save_colormap_image(colormap_img, overall_score)
+    # Calculate a score based on the average difference
+    avg_diff = np.mean(gray_diff)
+    score = int(avg_diff)
+
+    # Save the color map with the score as the filename
+    output_filename = f"color_map_score_{score}.png"
+    cv2.imwrite(output_filename, color_map)
+
+    return output_filename, score
 
 # Example usage
-main("image1.jpg", "image2.jpg")
+image1_path = 'image.jpg'
+image2_path = 'filled.jpg'
+output_filename, score = calculate_color_difference(image1_path, image2_path)
+print(f"Color map saved as {output_filename} with score {score}")
