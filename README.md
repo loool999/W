@@ -2,7 +2,7 @@
 
 This project places images onto another image at random positions, sizes, rotations, and tints, to remake the target image. The goal is to find the object placement, size, rotation, and tint that is closest to the target image.
 
--# litterly that thing that spu7nix made
+<sub> litterly that thing that spu7nix made</sub>
 
 ## How it Works
 
