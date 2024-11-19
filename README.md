@@ -2,7 +2,7 @@
 
 This project places images onto another image at random positions, sizes, rotations, and tints, to remake the target image. The goal is to find the object placement, size, rotation, and tint that is closest to the target image.
 
-<sub> litterly that thing that spu7nix made but worse</sub>
+> <sub> litterly that thing that spu7nix made but worse and my program only does it once</sub>
 
 ## How it Works
 
@@ -43,8 +43,11 @@ The script `main.py` performs the following actions:
 Contributions are welcome!  Please open an issue or submit a pull request.
 
 ## TODO
-- Uhhh more thing
-- Change name
+- [ ] Uhhh more thing
+- [ ] Change name
+- [ ] automate the process
+- [ ] make it faster
+- [ ] completing the TODOs
 
 ## License
 Used MIT LICENSE cuz that one looks pretty cool :)
