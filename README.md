@@ -23,6 +23,7 @@ The script `main.py` performs the following actions:
 
 * Python 3.12.1 
 * A CPU I guess
+* No GPU cuz I dont have one ;-;
 
 ## Usage
 
