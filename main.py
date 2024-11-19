@@ -4,7 +4,16 @@ import json
 from PIL import Image
 from dif import image_color_difference 
 
-def place_object_and_score(background_path, object_folder, output_folder, filled_image_path, max_attempts=100):  # Added max_attempts
+background_path="filled.jpg"
+object_folder="object"
+output_folder="output"
+filled_image_path="image.jpg"
+size_min=0.25
+size_max=4
+max_attempts=100
+
+
+def place_object_and_score(background_path=background_path, object_folder=object_folder, output_folder=output_folder, filled_image_path=filled_image_path, max_attempts=max_attempts):  # Added max_attempts
     """
     Places objects from a folder onto a background image at random positions, sizes, rotations, and tints,
     calculates the score, and saves the results. Also saves the highest score in a JSON file.
@@ -72,7 +81,7 @@ def place_object_random(background, object_image):
     obj_w, obj_h = object_image.size
 
     # Generate random scale
-    scale_factor = random.uniform(0.25, 4.0)
+    scale_factor = random.uniform(size_min, size_max)
     new_obj_w = int(obj_w * scale_factor)
     new_obj_h = int(obj_h * scale_factor)
     resized_object = object_image.resize((new_obj_w, new_obj_h), Image.LANCZOS)
@@ -123,4 +132,4 @@ def apply_tint(image, tint_color):
     return tinted_image
 
 # Usage
-place_object_and_score("filled.jpg", "object", "output", "image.jpg", max_attempts=500)
+place_object_and_score()
