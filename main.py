@@ -4,20 +4,24 @@ import json
 from PIL import Image
 from dif import image_color_difference 
 
+#|------|Variables|------|
+
 background_path="filled.jpg"
 object_folder="object"
 output_folder="output"
-filled_image_path="image.jpg"
+image_path="image.jpg"
 size_min=0.25
 size_max=4
 max_attempts=100
 
+# |------|Functions|------|
 
-def place_object_and_score(background_path=background_path, object_folder=object_folder, output_folder=output_folder, filled_image_path=filled_image_path, max_attempts=max_attempts):  # Added max_attempts
+def main(background_path=background_path, object_folder=object_folder, output_folder=output_folder, image_path=image_path, max_attempts=max_attempts):  # Added max_attempts
     """
-    Places objects from a folder onto a background image at random positions, sizes, rotations, and tints,
-    calculates the score, and saves the results. Also saves the highest score in a JSON file.
-    Stops after a specified number of attempts.
+    What this does (im gonna forgor later :skull:)
+        Places objects from a folder onto a background image at random positions, sizes, rotations, and tints,
+        calculates the score, and saves the results. Also saves the highest score in a JSON file.
+        Stops after a specified number of attempts.
 
     Args:
         background_path (str): Path to the background image (image.jpg).
@@ -49,7 +53,7 @@ def place_object_and_score(background_path=background_path, object_folder=object
         modified_background.save(modified_background_path)
 
         # Calculate score
-        score = image_color_difference(modified_background_path, filled_image_path)
+        score = image_color_difference(modified_background_path, image_path)
 
         # Create directory
         attempt_output_dir = os.path.join(output_folder, f"{attempt_number + 1}_{score}")
@@ -131,5 +135,6 @@ def apply_tint(image, tint_color):
 
     return tinted_image
 
-# Usage
-place_object_and_score()
+# |------|Usage|------|
+# this looks weird af ;-;
+main()
