@@ -2,7 +2,7 @@ import os
 import random
 import json
 from PIL import Image
-from dif import image_color_difference  # Assuming dif.py is in the same directory
+from dif import image_color_difference 
 
 def place_object_and_score(background_path, object_folder, output_folder, filled_image_path, max_attempts=100):  # Added max_attempts
     """
@@ -21,37 +21,37 @@ def place_object_and_score(background_path, object_folder, output_folder, filled
         os.makedirs(output_folder)
 
     background = Image.open(background_path).convert("RGBA")  # Ensure background is in RGBA mode
-    object_files = [f for f in os.listdir(object_folder) if f.endswith('.png')]  # Assuming .png format
+    object_files = [f for f in os.listdir(object_folder) if f.endswith('.png')] 
 
     best_attempt = None
     best_score = float('-inf')
 
-    for attempt_number in range(max_attempts):  # Iterate up to max_attempts
+    for attempt_number in range(max_attempts):  # max_attempts
         # Pick a random object file
         object_file = random.choice(object_files)
         object_path = os.path.join(object_folder, object_file)
         object_image = Image.open(object_path).convert("RGBA")  # Ensure object is in RGBA mode
 
-        # Place object at a random position, size, rotation, and tint
+        # Random thingy
         modified_background = place_object_random(background, object_image)
         
-        # Save the modified background
+        # Save
         modified_background_path = os.path.join(output_folder, f"temp_modified.png")
         modified_background.save(modified_background_path)
 
-        # Calculate score using image_color_difference
+        # Calculate score
         score = image_color_difference(modified_background_path, filled_image_path)
 
-        # Create directory for this attempt
+        # Create directory
         attempt_output_dir = os.path.join(output_folder, f"{attempt_number + 1}_{score}")
         if not os.path.exists(attempt_output_dir):
             os.makedirs(attempt_output_dir)
 
-        # Move and rename the modified background
+        # Move and rename
         final_modified_path = os.path.join(attempt_output_dir, f"modified_{attempt_number + 1}.png")
         os.rename(modified_background_path, final_modified_path)
 
-        # Move the difference colormap (assuming it's saved as 'difference_colormap.png' by your function)
+        # Move the colormap 
         os.rename("difference_colormap.png", os.path.join(attempt_output_dir, "difference_colormap.png"))
 
         print(f"Attempt {attempt_number + 1}: Score = {score}, saved in {attempt_output_dir}")
@@ -60,7 +60,7 @@ def place_object_and_score(background_path, object_folder, output_folder, filled
             best_score = score
             best_attempt = f"{attempt_number + 1}_{score}"
 
-    # Save the best attempt in a JSON file
+    # Save the best attempt
     if best_attempt:
         with open(os.path.join(output_folder, "highest_score.json"), "w") as f:
             json.dump({"highest_score": best_attempt}, f)
@@ -71,7 +71,7 @@ def place_object_random(background, object_image):
     bg_w, bg_h = background.size
     obj_w, obj_h = object_image.size
 
-    # Generate random scale factor between 0.25 and 4.0
+    # Generate random scale
     scale_factor = random.uniform(0.25, 4.0)
     new_obj_w = int(obj_w * scale_factor)
     new_obj_h = int(obj_h * scale_factor)
@@ -85,7 +85,7 @@ def place_object_random(background, object_image):
     tint_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
     tinted_object = apply_tint(rotated_object, tint_color)
 
-    # Generate random position (allowing objects to be slightly off the edge)
+    # Generate random position
     rot_w, rot_h = tinted_object.size
     x = random.randint(-rot_w // 2, bg_w - rot_w // 2)
     y = random.randint(-rot_h // 2, bg_h - rot_h // 2)
@@ -94,13 +94,13 @@ def place_object_random(background, object_image):
     temp_background = Image.new("RGBA", background.size)
     temp_background.paste(background, (0, 0))
 
-    # Paste the tinted object at the random position
+    # Paste the object at a random position
     temp_background.paste(tinted_object, (x, y), tinted_object)
 
     return temp_background
 
 def apply_tint(image, tint_color):
-    """Applies a tint color to the image while preserving transparency and gradients."""
+    """Applies a tint color to the image"""
     tinted_image = Image.new("RGBA", image.size)
     pixels = image.load()
     tinted_pixels = tinted_image.load()
@@ -110,9 +110,9 @@ def apply_tint(image, tint_color):
             r, g, b, a = pixels[i, j]
             tr, tg, tb = tint_color
 
-            # Blend the tint color with the original color based on the alpha channel
+            # Blend the tint color with the original original with an alpha channel
             if a == 0:
-                tinted_pixels[i, j] = (0, 0, 0, 0)  # Preserve full transparency
+                tinted_pixels[i, j] = (0, 0, 0, 0)  # To preserve transparency
             else:
                 alpha = a / 255.0
                 new_r = int((1 - alpha) * r + alpha * tr)
@@ -122,5 +122,5 @@ def apply_tint(image, tint_color):
 
     return tinted_image
 
-# Example Usage (adjust paths as needed)
-place_object_and_score("image.jpg", "object", "output", "filled.jpg", max_attempts=500)
+# Usage
+place_object_and_score("filled.jpg", "object", "output", "image.jpg", max_attempts=500)
