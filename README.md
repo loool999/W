@@ -42,5 +42,9 @@ The script `main.py` performs the following actions:
 
 Contributions are welcome!  Please open an issue or submit a pull request.
 
+## TODO
+- Uhhh more thing
+- Change name
+
 ## License
 Used MIT LICENSE cuz that one looks pretty cool :)
