@@ -41,4 +41,4 @@ The script `main.py` performs the following actions:
 Contributions are welcome!  Please open an issue or submit a pull request.
 
 ## License
-idk yet
+Used MIT LICENSE cuz that one looks pretty cool :)
