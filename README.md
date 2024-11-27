@@ -50,4 +50,4 @@ Contributions are welcome!  Please open an issue or submit a pull request.
 - [ ] completing the TODOs
 
 ## License
-Used MIT LICENSE cuz that one looks pretty cool :)
+Used MIT LICENSE cuz that one sounds pretty cool :)
